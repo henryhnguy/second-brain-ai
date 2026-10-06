@@ -19,18 +19,25 @@ sys.path.insert(0, str(BACKEND_DIR))
 import uvicorn
 
 if __name__ == "__main__":
+    is_cloud = bool(os.getenv("SPACE_ID") or os.getenv("RENDER") or os.getenv("RAILWAY_ENVIRONMENT"))
+    default_port = 7860 if os.getenv("SPACE_ID") else 8000
+    port = int(os.getenv("PORT", default_port))
+    host = os.getenv("HOST", "0.0.0.0" if is_cloud or os.getenv("PORT") else "127.0.0.1")
+
     print("=" * 60)
     print(">>> KHOI DONG SECOND BRAIN AI (BO NAO THU HAI CA NHAN) <<<")
     print("=" * 60)
-    print("URL Ung dung: http://localhost:8000")
-    print("API Swagger Docs: http://localhost:8000/docs")
+    print(f"Host: {host}:{port}")
+    print(f"URL Ung dung: http://{host if host != '0.0.0.0' else 'localhost'}:{port}")
+    print(f"API Swagger Docs: http://{host if host != '0.0.0.0' else 'localhost'}:{port}/docs")
     print("Nhan Ctrl + C de dung ung dung.")
     print("=" * 60)
 
-    # Automatically try opening the browser
-    try:
-        webbrowser.open("http://localhost:8000")
-    except Exception:
-        pass
+    # Automatically try opening the browser only in local desktop environments
+    if not is_cloud and host == "127.0.0.1":
+        try:
+            webbrowser.open(f"http://localhost:{port}")
+        except Exception:
+            pass
 
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run("app.main:app", host=host, port=port, reload=False)

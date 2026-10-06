@@ -1,3 +1,13 @@
+---
+title: Second Brain AI
+emoji: 🧠
+colorFrom: indigo
+colorTo: violet
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # 🧠 Second Brain AI - Bộ Não Thứ Hai Cá Nhân
 
 Một ứng dụng **Quản lý Tri thức Cá nhân (Personal Knowledge Management - PKM)** kết hợp công nghệ **RAG (Retrieval-Augmented Generation)** và **AI Copilot** hiện đại. Hệ thống giúp bạn tổ chức ghi chú, tài liệu PDF/Markdown theo phương pháp PARA, đồng thời cho phép bạn hỏi đáp và trò chuyện trực tiếp với toàn bộ kho kiến thức của chính mình.
@@ -39,10 +49,45 @@ Một ứng dụng **Quản lý Tri thức Cá nhân (Personal Knowledge Managem
 
 ---
 
+## 🌐 Triển Khai Online Lên Hugging Face Spaces (Miễn Phí 100%)
+
+Dự án đã được cấu hình sẵn **`Dockerfile` tối ưu hóa** và các thông số cho Hugging Face Spaces. Bạn chỉ mất 2 phút để đưa ứng dụng lên mạng với domain HTTPS công khai:
+
+### Cách 1: Đẩy trực tiếp từ máy của bạn lên Hugging Face Space (Khuyên dùng)
+1. Đăng ký/Đăng nhập tài khoản tại [huggingface.co](https://huggingface.co).
+2. Vào **[huggingface.co/new-space](https://huggingface.co/new-space)**:
+   - **Space name**: `second-brain-ai`
+   - **License**: `mit` (hoặc `apache-2.0`)
+   - **Select the Space SDK**: Chọn **Docker** (Blank)
+   - **Space hardware**: Chọn **CPU basic - Free** (Miễn phí 100%)
+   - Bấm **Create Space**.
+3. Thêm remote Hugging Face vào git cục bộ và đẩy lên:
+   ```bash
+   git remote add hf https://huggingface.co/spaces/<your-hf-username>/second-brain-ai
+   git push -u hf main
+   ```
+   *(Nhập username và Access Token Hugging Face khi được hỏi - lấy token tại [hf.co/settings/tokens](https://huggingface.co/settings/tokens))*.
+
+Hugging Face sẽ tự động build container Docker trong ~2 phút và cung cấp URL công khai dạng:
+`https://<your-username>-second-brain-ai.hf.space`
+
+---
+
+### Cách 2: Triển Khai Trên Render.com / Railway / Cloud VPS
+Nếu bạn muốn dùng Render hoặc Railway:
+1. Kết nối với GitHub repository: `https://github.com/henryhnguy/second-brain-ai`
+2. Chọn loại dịch vụ **Web Service** (Docker).
+3. Đặt port là `7860` (hoặc đặt biến môi trường `PORT=8000`).
+4. Bấm **Deploy**.
+
+---
+
 ## 🏗️ Cấu Trúc Dự Án
 
 ```
 second-brain/
+├── Dockerfile                   # Cấu hình container đa tầng cho HF Spaces & Cloud
+├── .dockerignore
 ├── backend/
 │   ├── app/
 │   │   ├── main.py              # FastAPI server & route mounting
@@ -52,7 +97,7 @@ second-brain/
 │   │   │   ├── chunker.py       # Smart text & markdown chunking
 │   │   │   ├── embeddings.py    # Hybrid embedding service (Gemini + Local)
 │   │   │   ├── vector_store.py  # SQLite-backed vector store & cosine search
-│   │   │   └── rag_service.py   # RAG pipeline orchestration & LLM chat
+│   │   │   └── rag_service.py   # RAG pipeline orchestration (Gemini & OpenRouter)
 │   │   └── routers/
 │   │       ├── notes.py         # CRUD ghi chú & tags
 │   │       ├── documents.py     # Upload & phân tích PDF/TXT/MD
@@ -68,9 +113,9 @@ second-brain/
 │   │   │   ├── NotesView.jsx    # Danh sách ghi chú & bộ lọc
 │   │   │   ├── NoteEditor.jsx   # Trình soạn thảo Markdown & AI Actions
 │   │   │   ├── DocumentsView.jsx# Quản lý & upload tài liệu PDF/MD
-│   │   │   ├── ChatView.jsx     # Giao diện chat RAG & trích dẫn
+│   │   │   ├── ChatView.jsx     # Giao diện chat RAG & Model Switcher
 │   │   │   ├── SearchView.jsx   # Giao diện Semantic Search
-│   │   │   └── SettingsModal.jsx# Cài đặt Gemini API key
+│   │   │   └── SettingsModal.jsx# Cài đặt Gemini & OpenRouter API keys
 │   │   ├── api.js               # Client API wrapper
 │   │   ├── App.jsx              # Giao diện chính kết hợp các module
 │   │   └── index.css            # Tailwind CSS v4 styling
@@ -83,7 +128,7 @@ second-brain/
 
 ---
 
-## 🚀 Hướng Dẫn Cài Đặt & Sử Dụng
+## 🚀 Chạy Cục Bộ (Local Machine)
 
 ### 1. Khởi chạy nhanh (Đã đóng gói sẵn)
 Chỉ cần chạy lệnh sau từ thư mục gốc của dự án:
@@ -98,8 +143,6 @@ Tài liệu API Swagger: **http://localhost:8000/docs**
 ---
 
 ### 2. Chế độ Phát triển (Development Mode)
-
-Nếu bạn muốn chỉnh sửa mã nguồn Backend hoặc Frontend đồng thời:
 
 #### Chạy Backend:
 ```powershell
@@ -119,12 +162,12 @@ Frontend sẽ chạy tại: **http://localhost:5173** (đã cấu hình proxy t�
 
 ## 🔑 Cấu Hình API Key (Google Gemini & OpenRouter)
 
-1. Mở giao diện ứng dụng tại `http://localhost:8000`.
-2. Nhấn vào mục **Cài đặt & API Key** ở góc dưới bên trái Sidebar (hoặc nút Cài đặt trên góc phải màn hình Chat).
+1. Mở giao diện ứng dụng.
+2. Nhấn vào mục **Cài đặt & API Key** ở góc dưới bên trái Sidebar (hoặc icon bánh răng góc phải Chat).
 3. **Cấu hình Google Gemini**:
    - Lấy API key miễn phí từ [Google AI Studio](https://aistudio.google.com/app/apikey).
    - Chọn tab **Google Gemini**, dán key và chọn mô hình (`gemini-2.5-flash`, `gemini-1.5-pro`...).
 4. **Cấu hình OpenRouter (Claude, DeepSeek, Llama...)**:
    - Tạo API key tại [OpenRouter Keys](https://openrouter.ai/keys).
    - Chọn tab **OpenRouter**, dán key và chọn mô hình mong muốn (DeepSeek V3, Claude 3.5 Sonnet, Llama 3.3, GPT-4o...) hoặc nhập model ID bất kỳ.
-5. Bấm **Lưu cấu hình**. Bạn có thể linh hoạt đổi qua lại mô hình ngay trên thanh điều khiển của Chat bất kỳ lúc nào!
+5. Bấm **Lưu cấu hình**.

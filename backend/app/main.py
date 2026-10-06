@@ -12,6 +12,12 @@ from app.routers import notes, documents, chat, search, settings
 from app.rag.rag_service import rag_service
 
 FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+if not FRONTEND_DIST.exists():
+    env_dist = os.getenv("FRONTEND_DIST")
+    if env_dist and Path(env_dist).exists():
+        FRONTEND_DIST = Path(env_dist)
+    elif Path("/app/frontend/dist").exists():
+        FRONTEND_DIST = Path("/app/frontend/dist")
 
 
 @asynccontextmanager
