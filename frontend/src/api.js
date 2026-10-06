@@ -81,11 +81,14 @@ export const api = {
     const res = await fetch(`${API_BASE}/chat/sessions/${sessionId}/messages`);
     return res.json();
   },
-  askQuery: async (sessionId, question) => {
+  askQuery: async (sessionId, question, provider = null, model = null) => {
+    const payload = { session_id: sessionId, question };
+    if (provider) payload.provider = provider;
+    if (model) payload.model = model;
     const res = await fetch(`${API_BASE}/chat/query`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: sessionId, question })
+      body: JSON.stringify(payload)
     });
     return res.json();
   },

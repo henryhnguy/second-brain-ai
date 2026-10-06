@@ -110,8 +110,13 @@ async def chat_query(req: ChatQueryRequest):
 
     conn.close()
 
-    # Run RAG
-    rag_result = await rag_service.answer_query(question, chat_history=chat_history)
+    # Run RAG with optional custom provider/model override
+    rag_result = await rag_service.answer_query(
+        question,
+        chat_history=chat_history,
+        provider=req.provider,
+        model=req.model
+    )
     answer = rag_result["answer"]
     sources = rag_result["sources"]
 

@@ -25,10 +25,17 @@ Một ứng dụng **Quản lý Tri thức Cá nhân (Personal Knowledge Managem
    - Tìm kiếm theo ý nghĩa và ngữ cảnh thay vì chỉ khớp chính xác từng từ khóa.
    - Lọc theo nguồn (Chỉ Ghi chú hoặc Chỉ Tài liệu) và xem trước đoạn trích dẫn tức thì.
 
-5. **⚙️ Tích hợp Mô hình AI Linh hoạt:**
+5. **⚙️ Đa dạng Mô hình AI (Google Gemini & OpenRouter):**
    - Hỗ trợ **Google Gemini API** (`gemini-2.5-flash`, `gemini-1.5-flash`, `gemini-1.5-pro`).
+   - Hỗ trợ **OpenRouter API** với hàng trăm mô hình bên ngoài:
+     - **DeepSeek V3 & DeepSeek R1** (`deepseek/deepseek-chat`, `deepseek/deepseek-r1`)
+     - **Claude 3.5 Sonnet** (`anthropic/claude-3.5-sonnet`)
+     - **Llama 3.3 70B** (`meta-llama/llama-3.3-70b-instruct`)
+     - **GPT-4o & GPT-4o Mini** (`openai/gpt-4o`, `openai/gpt-4o-mini`)
+     - **Qwen 2.5 72B** (`qwen/qwen-2.5-72b-instruct`)
+     - Cho phép nhập bất kỳ Custom Model ID nào trên OpenRouter.
+   - **Chuyển đổi mô hình nhanh (Model Quick Switcher)** ngay trên thanh điều khiển của giao diện Chat.
    - Cung cấp cơ chế **Local Embedding & Synthesis Fallback**: Hệ thống hoạt động trơn tru ngay cả khi chưa nhập API key.
-   - Cấu hình API key an toàn trực tiếp trên giao diện Cài đặt (Settings).
 
 ---
 
@@ -110,10 +117,14 @@ Frontend sẽ chạy tại: **http://localhost:5173** (đã cấu hình proxy t�
 
 ---
 
-## 🔑 Cấu Hình Google Gemini API Key
+## 🔑 Cấu Hình API Key (Google Gemini & OpenRouter)
 
 1. Mở giao diện ứng dụng tại `http://localhost:8000`.
-2. Nhấn vào mục **Cài đặt & API Key** ở góc dưới bên trái Sidebar.
-3. Lấy API key miễn phí từ [Google AI Studio](https://aistudio.google.com/app/apikey).
-4. Dán API key vào ô cấu hình và bấm **Lưu cấu hình**.
-5. AI Copilot sẽ tự động chuyển sang mô hình Gemini siêu tốc để trả lời chuyên sâu mọi câu hỏi của bạn!
+2. Nhấn vào mục **Cài đặt & API Key** ở góc dưới bên trái Sidebar (hoặc nút Cài đặt trên góc phải màn hình Chat).
+3. **Cấu hình Google Gemini**:
+   - Lấy API key miễn phí từ [Google AI Studio](https://aistudio.google.com/app/apikey).
+   - Chọn tab **Google Gemini**, dán key và chọn mô hình (`gemini-2.5-flash`, `gemini-1.5-pro`...).
+4. **Cấu hình OpenRouter (Claude, DeepSeek, Llama...)**:
+   - Tạo API key tại [OpenRouter Keys](https://openrouter.ai/keys).
+   - Chọn tab **OpenRouter**, dán key và chọn mô hình mong muốn (DeepSeek V3, Claude 3.5 Sonnet, Llama 3.3, GPT-4o...) hoặc nhập model ID bất kỳ.
+5. Bấm **Lưu cấu hình**. Bạn có thể linh hoạt đổi qua lại mô hình ngay trên thanh điều khiển của Chat bất kỳ lúc nào!

@@ -43,6 +43,8 @@ class DocumentResponse(BaseModel):
 class ChatQueryRequest(BaseModel):
     session_id: Optional[int] = None
     question: str
+    provider: Optional[str] = None # 'gemini' or 'openrouter'
+    model: Optional[str] = None
     filters: Optional[Dict[str, Any]] = None
 
 
@@ -63,8 +65,12 @@ class ChatSessionResponse(BaseModel):
 
 
 class SettingsUpdate(BaseModel):
+    llm_provider: Optional[str] = None # 'gemini' or 'openrouter'
     gemini_api_key: Optional[str] = None
-    model_name: Optional[str] = None
+    openrouter_api_key: Optional[str] = None
+    gemini_model: Optional[str] = None
+    openrouter_model: Optional[str] = None
+    model_name: Optional[str] = None # backward compatibility
 
 
 class SearchResult(BaseModel):

@@ -152,7 +152,7 @@ export default function App() {
     }
   };
 
-  const handleSendMessage = async (text) => {
+  const handleSendMessage = async (text, provider = null, model = null) => {
     setIsChatLoading(true);
     // Optimistic UI for user message
     const tempUserMsg = {
@@ -166,7 +166,7 @@ export default function App() {
     setMessages((prev) => [...prev, tempUserMsg]);
 
     try {
-      const resp = await api.askQuery(currentSessionId, text);
+      const resp = await api.askQuery(currentSessionId, text, provider, model);
       if (!currentSessionId && resp.session_id) {
         setCurrentSessionId(resp.session_id);
         const updatedSessions = await api.getSessions();
@@ -255,6 +255,8 @@ export default function App() {
             onSendMessage={handleSendMessage}
             isLoading={isChatLoading}
             initialPrompt={chatPromptPending}
+            settings={settings}
+            onOpenSettings={() => setIsSettingsOpen(true)}
           />
         )}
 

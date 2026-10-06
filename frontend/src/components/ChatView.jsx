@@ -10,9 +10,12 @@ import {
   FileText, 
   BookOpen, 
   ChevronDown, 
-  ChevronUp,
-  BrainCircuit,
-  CornerDownLeft
+  ChevronUp, 
+  BrainCircuit, 
+  CornerDownLeft,
+  Globe,
+  Settings,
+  Cpu
 } from 'lucide-react';
 
 export default function ChatView({
@@ -24,12 +27,30 @@ export default function ChatView({
   messages,
   onSendMessage,
   isLoading,
-  initialPrompt
+  initialPrompt,
+  settings,
+  onOpenSettings
 }) {
   const [inputMessage, setInputMessage] = useState('');
   const [expandedSources, setExpandedSources] = useState({});
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Active Provider & Model selection inside Chat
+  const [selectedProvider, setSelectedProvider] = useState('gemini');
+  const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
+
+  useEffect(() => {
+    if (settings) {
+      const prov = settings.llm_provider || 'gemini';
+      setSelectedProvider(prov);
+      if (prov === 'openrouter') {
+        setSelectedModel(settings.openrouter_model || 'deepseek/deepseek-chat');
+      } else {
+        setSelectedModel(settings.gemini_model || settings.model_name || 'gemini-2.5-flash');
+      }
+    }
+  }, [settings]);
 
   useEffect(() => {
     if (initialPrompt) {
@@ -47,7 +68,7 @@ export default function ChatView({
     if (!inputMessage.trim() || isLoading) return;
     const msg = inputMessage;
     setInputMessage('');
-    onSendMessage(msg);
+    onSendMessage(msg, selectedProvider, selectedModel);
   };
 
   const toggleSource = (msgIndex, srcIndex) => {
@@ -63,6 +84,23 @@ export default function ChatView({
     "📚 Tóm tắt nguyên lý hoạt động của phương pháp PARA",
     "💡 Tuyển tập các kỹ thuật prompt AI hiệu quả nhất",
     "🎯 Những việc tôi cần ưu tiên thực hiện cho dự án của mình là gì?"
+  ];
+
+  const geminiModels = settings?.available_models?.gemini || [
+    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+    { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash' },
+    { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro' }
+  ];
+
+  const openrouterModels = settings?.available_models?.openrouter || [
+    { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3' },
+    { id: 'deepseek/deepseek-r1', name: 'DeepSeek R1' },
+    { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' },
+    { id: 'meta-llama/llama-3.3-70b-instruct', name: 'Llama 3.3 70B' },
+    { id: 'openai/gpt-4o', name: 'GPT-4o' },
+    { id: 'openai/gpt-4o-mini', name: 'GPT-4o Mini' },
+    { id: 'qwen/qwen-2.5-72b-instruct', name: 'Qwen 2.5 72B' },
+    { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash (Free)' }
   ];
 
   return (
@@ -118,6 +156,65 @@ export default function ChatView({
 
       {/* Main Chat Interface */}
       <div className="flex-1 flex flex-col h-full bg-slate-950">
+        {/* Top Control Bar with Model Switcher */}
+        <div className="h-14 border-b border-slate-800 px-6 flex items-center justify-between bg-slate-900/40 backdrop-blur-sm">
+          <div className="flex items-center space-x-2">
+            <Bot className="w-4 h-4 text-indigo-400" />
+            <span className="text-xs font-semibold text-slate-200">
+              RAG Copilot
+            </span>
+          </div>
+
+          {/* Model Switcher Dropdown */}
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5 bg-slate-800/90 border border-slate-700/80 rounded-lg px-2.5 py-1">
+              {selectedProvider === 'openrouter' ? (
+                <Globe className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              )}
+
+              <select
+                value={`${selectedProvider}::${selectedModel}`}
+                onChange={(e) => {
+                  const [prov, mod] = e.target.value.split('::');
+                  setSelectedProvider(prov);
+                  setSelectedModel(mod);
+                }}
+                className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer pr-1"
+              >
+                <optgroup label="⚡ Google Gemini">
+                  {geminiModels.map((m) => (
+                    <option key={`gemini::${m.id}`} value={`gemini::${m.id}`} className="bg-slate-900 text-slate-100">
+                      Gemini - {m.name}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="🌐 OpenRouter Models">
+                  {openrouterModels.map((m) => (
+                    <option key={`openrouter::${m.id}`} value={`openrouter::${m.id}`} className="bg-slate-900 text-slate-100">
+                      OpenRouter - {m.name}
+                    </option>
+                  ))}
+                  {settings?.openrouter_model && !openrouterModels.some(m => m.id === settings.openrouter_model) && (
+                    <option value={`openrouter::${settings.openrouter_model}`} className="bg-slate-900 text-slate-100">
+                      OpenRouter - {settings.openrouter_model} (Tùy chỉnh)
+                    </option>
+                  )}
+                </optgroup>
+              </select>
+            </div>
+
+            <button
+              onClick={onOpenSettings}
+              title="Cài đặt API Key & Model"
+              className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+            >
+              <Settings className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
         {/* Messages Container */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {messages.length === 0 ? (
@@ -131,7 +228,8 @@ export default function ChatView({
                   Trợ lý AI Second Brain
                 </h2>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Tôi có thể đọc, phân tích và trích xuất thông tin từ toàn bộ ghi chú và tài liệu cá nhân của bạn. Hãy thử chọn một câu hỏi gợi ý hoặc nhập bất kỳ thắc mắc nào:
+                  Đang sử dụng mô hình <strong className="text-indigo-400">{selectedModel}</strong> ({selectedProvider === 'openrouter' ? 'OpenRouter' : 'Google Gemini'}).
+                  Hệ thống sẽ tra cứu toàn bộ ghi chú và tài liệu cá nhân để trả lời chính xác nhất:
                 </p>
               </div>
 
@@ -139,7 +237,7 @@ export default function ChatView({
                 {starterPrompts.map((p, idx) => (
                   <button
                     key={idx}
-                    onClick={() => onSendMessage(p)}
+                    onClick={() => onSendMessage(p, selectedProvider, selectedModel)}
                     className="p-3 text-left rounded-xl bg-slate-900/60 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-xs text-slate-300 hover:text-white transition-all shadow-sm"
                   >
                     {p}
@@ -249,7 +347,7 @@ export default function ChatView({
               </div>
               <div className="p-3 bg-slate-900 border border-slate-800 rounded-2xl rounded-tl-none text-xs text-slate-400 flex items-center space-x-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-ping" />
-                <span>Second Brain đang tra cứu vector và suy luận câu trả lời...</span>
+                <span>Second Brain đang tra cứu ({selectedModel})...</span>
               </div>
             </div>
           )}
@@ -271,7 +369,7 @@ export default function ChatView({
                 }
               }}
               rows={2}
-              placeholder="Đặt câu hỏi với Second Brain (Enter để gửi, Shift+Enter để xuống dòng)..."
+              placeholder={`Đặt câu hỏi với ${selectedModel} (Enter để gửi)...`}
               className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-4 pr-12 py-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
             />
 

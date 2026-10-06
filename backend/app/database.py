@@ -98,12 +98,23 @@ def init_db():
     conn.commit()
 
     # Insert default settings if not exists
+    cursor.execute("SELECT value FROM settings WHERE key = 'llm_provider'")
+    if not cursor.fetchone():
+        cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('llm_provider', 'gemini')")
+
     cursor.execute("SELECT value FROM settings WHERE key = 'gemini_api_key'")
     if not cursor.fetchone():
         env_key = os.getenv("GEMINI_API_KEY", "")
         cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", ("gemini_api_key", env_key))
         cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", ("model_name", "gemini-2.5-flash"))
-        conn.commit()
+
+    cursor.execute("SELECT value FROM settings WHERE key = 'openrouter_api_key'")
+    if not cursor.fetchone():
+        env_or_key = os.getenv("OPENROUTER_API_KEY", "")
+        cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", ("openrouter_api_key", env_or_key))
+        cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", ("openrouter_model", "deepseek/deepseek-chat"))
+
+    conn.commit()
 
     # Seed sample notes if empty
     cursor.execute("SELECT COUNT(*) as cnt FROM notes")
