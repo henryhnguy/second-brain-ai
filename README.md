@@ -3,8 +3,8 @@ title: Second Brain AI
 emoji: 🧠
 colorFrom: indigo
 colorTo: violet
-sdk: docker
-app_port: 7860
+sdk: gradio
+app_file: app.py
 pinned: false
 ---
 

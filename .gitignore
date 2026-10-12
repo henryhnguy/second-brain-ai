@@ -40,7 +40,8 @@ backend/data/uploads/*
 # Node & Frontend
 node_modules/
 frontend/node_modules/
-frontend/dist/
+!frontend/dist/
+# frontend/dist/ is tracked for free cloud deployments (HF Spaces, Render) — no Node.js build step needed
 frontend/.vite/
 npm-debug.log*
 yarn-debug.log*
