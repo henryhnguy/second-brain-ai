@@ -1,9 +1,9 @@
 import os
 from fastapi import APIRouter
-from app.database import get_db_connection
-from app.models import SettingsUpdate
-from app.rag.embeddings import embedding_service
-from app.rag.rag_service import rag_service
+from brain_app.database import get_db_connection
+from brain_app.models import SettingsUpdate
+from brain_app.rag.embeddings import embedding_service
+from brain_app.rag.rag_service import rag_service
 
 router = APIRouter(prefix="/api/settings", tags=["settings"])
 

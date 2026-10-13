@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import List
 from fastapi import APIRouter, HTTPException
 
-from app.database import get_db_connection
-from app.models import ChatQueryRequest, ChatMessageResponse, ChatSessionResponse
-from app.rag.rag_service import rag_service
+from brain_app.database import get_db_connection
+from brain_app.models import ChatQueryRequest, ChatMessageResponse, ChatSessionResponse
+from brain_app.rag.rag_service import rag_service
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 

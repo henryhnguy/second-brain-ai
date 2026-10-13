@@ -5,10 +5,10 @@ from typing import List, Dict, Any, Optional
 import httpx
 from pypdf import PdfReader
 
-from app.database import get_db_connection
-from app.rag.chunker import chunk_text
-from app.rag.embeddings import embedding_service
-from app.rag.vector_store import vector_store
+from brain_app.database import get_db_connection
+from brain_app.rag.chunker import chunk_text
+from brain_app.rag.embeddings import embedding_service
+from brain_app.rag.vector_store import vector_store
 
 
 class RAGService:

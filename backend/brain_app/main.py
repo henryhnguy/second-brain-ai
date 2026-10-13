@@ -7,9 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from app.database import init_db, get_db_connection
-from app.routers import notes, documents, chat, search, settings
-from app.rag.rag_service import rag_service
+from brain_app.database import init_db, get_db_connection
+from brain_app.routers import notes, documents, chat, search, settings
+from brain_app.rag.rag_service import rag_service
 
 FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
 if not FRONTEND_DIST.exists():

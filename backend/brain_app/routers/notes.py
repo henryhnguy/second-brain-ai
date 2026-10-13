@@ -3,10 +3,10 @@ from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Query
 
-from app.database import get_db_connection
-from app.models import NoteCreate, NoteUpdate, NoteResponse
-from app.rag.rag_service import rag_service
-from app.rag.vector_store import vector_store
+from brain_app.database import get_db_connection
+from brain_app.models import NoteCreate, NoteUpdate, NoteResponse
+from brain_app.rag.rag_service import rag_service
+from brain_app.rag.vector_store import vector_store
 
 router = APIRouter(prefix="/api/notes", tags=["notes"])
 

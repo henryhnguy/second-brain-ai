@@ -5,10 +5,10 @@ from pathlib import Path
 from typing import List
 from fastapi import APIRouter, HTTPException, UploadFile, File
 
-from app.database import get_db_connection, DB_DIR
-from app.models import DocumentResponse
-from app.rag.rag_service import rag_service
-from app.rag.vector_store import vector_store
+from brain_app.database import get_db_connection, DB_DIR
+from brain_app.models import DocumentResponse
+from brain_app.rag.rag_service import rag_service
+from brain_app.rag.vector_store import vector_store
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
 

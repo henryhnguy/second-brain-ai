@@ -1,9 +1,9 @@
 from typing import List, Optional
 from fastapi import APIRouter, Query
 
-from app.models import SearchResult
-from app.rag.embeddings import embedding_service
-from app.rag.vector_store import vector_store
+from brain_app.models import SearchResult
+from brain_app.rag.embeddings import embedding_service
+from brain_app.rag.vector_store import vector_store
 
 router = APIRouter(prefix="/api/search", tags=["search"])
 

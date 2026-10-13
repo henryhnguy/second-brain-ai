@@ -40,4 +40,4 @@ if __name__ == "__main__":
         except Exception:
             pass
 
-    uvicorn.run("app.main:app", host=host, port=port, reload=False)
+    uvicorn.run("brain_app.main:app", host=host, port=port, reload=False)

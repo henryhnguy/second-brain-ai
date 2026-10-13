@@ -2,7 +2,7 @@ import json
 import sqlite3
 from typing import List, Dict, Any, Optional
 import numpy as np
-from app.database import get_db_connection
+from brain_app.database import get_db_connection
 
 
 class VectorStore:

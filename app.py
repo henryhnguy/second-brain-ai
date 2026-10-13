@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "backend"))
 
 import gradio as gr
-from app.main import app as fastapi_app
+from brain_app.main import app as fastapi_app
 
 # Minimal Gradio UI — acts only as a redirect wrapper.
 # Hugging Face Spaces (Gradio SDK) requires a "demo" or "app" object.
