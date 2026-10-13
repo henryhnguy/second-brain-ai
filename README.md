@@ -5,7 +5,7 @@ colorFrom: indigo
 colorTo: purple
 sdk: gradio
 app_file: app.py
-suggested_hardware: cpu-basic
+suggested_hardware: zero-a10g
 pinned: false
 ---
 
